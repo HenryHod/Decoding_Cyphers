@@ -1,0 +1,101 @@
+coded_message = "xuo jxuhu! jxyi yi qd unqcfbu ev q squiqh syfxuh. muhu oek qrbu je tusetu yj? y xefu ie! iudt cu q cuiiqwu rqsa myjx jxu iqcu evviuj!"
+
+# message decoder for above message which uses an offset integer:
+
+def decoder(text,offset): 
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    punctuation = "?!.,"
+    coded_alphabet = ""
+    for x in range(len(alphabet)):
+        if x-offset <= len(alphabet) and x-offset>=0:
+            coded_alphabet += (alphabet[x-offset])
+        elif x-offset > len(alphabet):
+            coded_alphabet += alphabet[x-len(alphabet)-offset]
+        else:
+            coded_alphabet += alphabet[x+len(alphabet)-offset]
+    decoded_message_indices = []
+    decoded_message = ""
+    for y in range(len(text)):
+        if not coded_alphabet.find(text[y]) == -1:
+            decoded_message_indices.append((coded_alphabet.find(text[y])))
+        else:
+            decoded_message_indices.append(text[y])
+    for index in decoded_message_indices:
+        if not isinstance(index,int):
+            decoded_message += index
+        else:    
+                decoded_message += alphabet[index]
+    return decoded_message
+print(decoder(coded_message,10))
+
+# use this function to code a message using an offset integer:
+
+new_message = "hello, my name is henry"
+def coder(text,offset):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    coded_alphabet = ""
+    for x in range(len(alphabet)):
+        coded_alphabet += (alphabet[x-offset])
+    decoded_message = ""
+    new_message_indices = []
+    for y in range(len(text)):
+        if not coded_alphabet.find(text[y]) == -1: 
+            new_message_indices.append(alphabet.find(text[y]))
+        else:
+            new_message_indices.append(text[y])
+    for index in new_message_indices:
+        if not isinstance(index,int):
+            decoded_message += index
+        else:
+            decoded_message += coded_alphabet[index]
+    return(decoded_message)
+print(coder(new_message,10))
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+print(decoder("d",alphabet.find("f")))
+
+# This function is used to decode a vigenere cypher which uses a character's alphabet index and offsets the character in the message by this offset:
+
+def vigenere_decoder(message,keyword):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    decoded_message = ""
+    keyword = keyword*(int(len(message)/len(keyword)) +1)
+    for y in range(len(message)):
+        if alphabet.find(message[y]) == -1:
+            keyword_list = list(keyword)
+            keyword_list.insert(y,message[y])
+            keyword = "".join(keyword_list)
+            keyword = keyword[0:len(message)]
+    for x in range(len(message)):
+            if not alphabet.find(message[x]) == -1:
+                decoded_message += alphabet[alphabet.find(message[x])-alphabet.find(keyword[x])]
+            else:
+                decoded_message += message[x]
+    return decoded_message
+    
+print(vigenere_decoder("dfc aruw fsti gr vjtwhr wznj? vmph otis! cbx swv jipreneo uhllj kpi rahjib eg fjdkwkedhmp!","friends"))
+
+# This function below codes vigenere cyphers given a message and keyword:
+
+def vigenere_coder(message,keyword):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    coded_message = ""
+    keyword = keyword*(int(len(message)/len(keyword)) +1)
+    for y in range(len(message)):
+        if alphabet.find(message[y]) == -1:
+            keyword_list = list(keyword)
+            keyword_list.insert(y,message[y])
+            keyword = "".join(keyword_list)
+            keyword = keyword[0:len(message)]
+    for x in range(len(message)):
+            if not alphabet.find(message[x]) == -1:
+                if (alphabet.find(message[x])+alphabet.find(keyword[x])) <= len(alphabet)-1 and (alphabet.find(message[x])+alphabet.find(keyword[x])) >= 0:
+                    coded_message += alphabet[alphabet.find(message[x])+alphabet.find(keyword[x])]
+                elif alphabet.find(message[x])+alphabet.find(keyword[x]) > len(alphabet)-1:
+                    coded_message += alphabet[alphabet.find(message[x])+alphabet.find(keyword[x]) - len(alphabet)]
+                elif alphabet.find(message[x])+alphabet.find(keyword[x]) < 0: 
+                    coded_message += alphabet[alphabet.find(message[x])+alphabet.find(keyword[x]) + len(alphabet)]
+            else:
+                coded_message += message[x]
+    return coded_message
+    
+print(vigenere_coder("hello, my name is henry!","xylaphone"))
